@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import io
 import base64
 
-# Função para gerar dados simulados com loops e condicionais
+
 def gerar_dados_vendas():
     """Gera dados simulados de vendas usando loops e condicionais"""
     vendedores = ["Ana Silva", "João Santos", "Maria Costa", "Pedro Oliveira", "Carla Souza"]
@@ -15,25 +15,23 @@ def gerar_dados_vendas():
     regioes = ["Norte", "Sul", "Leste", "Oeste", "Centro"]
     
     dados = []
-    
-    # Loop para gerar 500 registros de vendas
     for i in range(500):
-        # Condicionais para definir características dos dados
+
         vendedor = np.random.choice(vendedores)
         produto = np.random.choice(produtos)
         regiao = np.random.choice(regioes)
         
-        # Condicional para definir preço baseado no produto
+
         if produto == "Notebook":
             preco_base = np.random.uniform(2000, 5000)
         elif produto == "Monitor":
             preco_base = np.random.uniform(800, 2000)
         elif produto in ["Mouse", "Teclado"]:
             preco_base = np.random.uniform(50, 200)
-        else:  # Webcam, Headset
+        else:
             preco_base = np.random.uniform(100, 500)
         
-        # Condicional para aplicar desconto baseado na região
+  
         if regiao in ["Norte", "Sul"]:
             desconto = 0.1  # 10% desconto
         elif regiao == "Centro":
@@ -43,14 +41,12 @@ def gerar_dados_vendas():
         
         preco_final = preco_base * (1 - desconto)
         quantidade = np.random.randint(1, 10)
-        
-        # Condicional para bônus do vendedor
+
         if quantidade >= 5:
             bonus_vendedor = preco_final * 0.02  # 2% de bônus
         else:
             bonus_vendedor = preco_final * 0.01  # 1% de bônus
-        
-        # Data aleatória nos últimos 12 meses
+
         data_venda = datetime.now() - timedelta(days=np.random.randint(0, 365))
         
         dados.append({
@@ -66,17 +62,16 @@ def gerar_dados_vendas():
     
     return pd.DataFrame(dados)
 
-# Função para calcular estatísticas com loops e condicionais
+
 def calcular_estatisticas(df):
     """Calcula estatísticas usando loops e condicionais"""
     stats = {}
-    
-    # Loop através dos vendedores para calcular estatísticas individuais
+
     vendedores_stats = {}
     for vendedor in df['vendedor'].unique():
         dados_vendedor = df[df['vendedor'] == vendedor]
         
-        # Condicionais para classificar performance
+
         total_vendas = dados_vendedor['total_venda'].sum()
         if total_vendas >= 50000:
             performance = "Excelente"
@@ -96,7 +91,7 @@ def calcular_estatisticas(df):
     
     stats['vendedores'] = vendedores_stats
     
-    # Loop através das regiões
+
     regioes_stats = {}
     for regiao in df['regiao'].unique():
         dados_regiao = df[df['regiao'] == regiao]
@@ -111,7 +106,7 @@ def calcular_estatisticas(df):
     
     return stats
 
-# Interface do usuário usando a API mais recente
+
 app_ui = ui.page_sidebar(
     ui.sidebar(
         ui.h3("🔧 Filtros"),
@@ -146,7 +141,7 @@ app_ui = ui.page_sidebar(
     ui.div(
         ui.h1("📊 Dashboard de Análise de Vendas"),
         
-        # Cards com estatísticas
+
         ui.div(
             ui.div(
                 ui.div(
@@ -183,7 +178,7 @@ app_ui = ui.page_sidebar(
             class_="row"
         ),
         
-        # Tabs para diferentes visualizações
+
         ui.navset_card_tab(
             ui.nav_panel("📈 Gráficos",
                 ui.div(
@@ -227,10 +222,9 @@ app_ui = ui.page_sidebar(
 )
 
 def server(input, output, session):
-    # Dados reativos
+
     dados_vendas = reactive.Value(gerar_dados_vendas())
-    
-    # Atualizar choices dos filtros quando os dados mudarem
+
     @reactive.Effect
     def atualizar_filtros():
         df = dados_vendas()
@@ -248,18 +242,18 @@ def server(input, output, session):
             choices=sorted(df['produto'].unique().tolist())
         )
     
-    # Gerar novos dados quando botão for clicado
+
     @reactive.Effect
     @reactive.event(input.gerar_dados)
     def gerar_novos_dados():
         dados_vendas.set(gerar_dados_vendas())
     
-    # Filtrar dados baseado nos inputs
+
     @reactive.Calc
     def dados_filtrados():
         df = dados_vendas().copy()
         
-        # Aplicar filtros condicionalmente
+
         if input.vendedor_filtro():
             df = df[df['vendedor'].isin(input.vendedor_filtro())]
         
@@ -268,8 +262,7 @@ def server(input, output, session):
             
         if input.produto_filtro():
             df = df[df['produto'].isin(input.produto_filtro())]
-        
-        # Filtro de data
+
         df['data'] = pd.to_datetime(df['data'])
         data_inicio = pd.to_datetime(input.data_filtro()[0])
         data_fim = pd.to_datetime(input.data_filtro()[1])
@@ -277,7 +270,7 @@ def server(input, output, session):
         
         return df
     
-    # Outputs dos cards de estatísticas
+
     @output
     @render.text
     def total_vendas():
@@ -305,7 +298,7 @@ def server(input, output, session):
             return vendas_por_vendedor.idxmax()
         return "N/A"
     
-    # Gráficos
+
     @output
     @render.plot
     def grafico_vendedores():
@@ -320,7 +313,7 @@ def server(input, output, session):
         fig, ax = plt.subplots(figsize=(10, 6))
         bars = ax.barh(range(len(vendas_vendedor)), vendas_vendedor.values)
         
-        # Loop para colorir barras condicionalmente
+
         for i, bar in enumerate(bars):
             if vendas_vendedor.values[i] >= 40000:
                 bar.set_color('green')
@@ -367,7 +360,7 @@ def server(input, output, session):
         fig, ax = plt.subplots(figsize=(10, 6))
         bars = ax.bar(range(len(vendas_produto)), vendas_produto.values)
         
-        # Colorir barras baseado no valor
+
         for i, bar in enumerate(bars):
             if vendas_produto.values[i] >= vendas_produto.mean():
                 bar.set_color('darkgreen')
@@ -403,14 +396,14 @@ def server(input, output, session):
         plt.tight_layout()
         return fig
     
-    # Tabela de dados
+
     @output
     @render.data_frame
     def tabela_dados():
         df = dados_filtrados()
         return df.sort_values('total_venda', ascending=False)
     
-    # Relatório de performance
+
     @output
     @render.ui
     def relatorio_performance():
@@ -420,17 +413,17 @@ def server(input, output, session):
         
         stats = calcular_estatisticas(df)
         
-        # Criar relatório usando loops e condicionais
+
         relatorio_html = []
         
         relatorio_html.append(ui.h3("🏆 Relatório de Performance"))
         relatorio_html.append(ui.hr())
         
-        # Seção de vendedores
+ 
         relatorio_html.append(ui.h4("👥 Performance por Vendedor"))
         
         for vendedor, dados in stats['vendedores'].items():
-            # Condicional para ícone baseado na performance
+        
             if dados['performance'] == "Excelente":
                 icone = "🏆"
                 cor_style = "color: green;"
@@ -456,7 +449,7 @@ def server(input, output, session):
                 )
             )
         
-        # Seção de regiões
+  
         relatorio_html.append(ui.h4("🗺️ Performance por Região"))
         
         for regiao, dados in stats['regioes'].items():
@@ -470,7 +463,7 @@ def server(input, output, session):
                 )
             )
         
-        # Resumo geral
+
         relatorio_html.append(ui.h4("📈 Resumo Geral"))
         relatorio_html.append(
             ui.div(
@@ -482,7 +475,6 @@ def server(input, output, session):
         
         return ui.div(*relatorio_html)
 
-# Criar aplicação
 app = App(app_ui, server)
 
 if __name__ == "__main__":
