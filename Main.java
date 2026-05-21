@@ -10,8 +10,8 @@ public class Main {
         sistema.adicionarQuadra(new Quadra("Quadra B", 2));
         sistema.adicionarQuadra(new Quadra("Quadra C", 2));
 
-        // Situacao inicial — tudo vazio
-        sistema.consultarVagas();
+        // Situacao inicial — relatorio com tudo vazio
+        Relatorio.exibirStatus(sistema.getNomeFaculdade(), sistema.getQuadras());
 
         // Veiculos chegando de manha
         System.out.println("-- Veiculos chegando --");
@@ -23,8 +23,8 @@ public class Main {
         sistema.registrarEntrada("Quadra C");
         sistema.registrarEntrada("Quadra C"); // Tudo cheio
 
-        // Consulta: sistema avisa que esta lotado
-        sistema.consultarVagas();
+        // Relatorio: sistema avisa que esta lotado
+        Relatorio.exibirStatus(sistema.getNomeFaculdade(), sistema.getQuadras());
 
         // Tenta entrar mas nao tem vaga
         System.out.println("-- Mais um veiculo tenta entrar --");
@@ -36,7 +36,7 @@ public class Main {
         sistema.registrarSaida("Quadra A");
         sistema.registrarSaida("Quadra C");
 
-        // Consulta final — agora tem vaga de novo
-        sistema.consultarVagas();
+        // Relatorio final — agora tem vaga de novo
+        Relatorio.exibirStatus(sistema.getNomeFaculdade(), sistema.getQuadras());
     }
 }
