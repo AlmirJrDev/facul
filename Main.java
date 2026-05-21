@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
 
         // Configura o estacionamento com 3 quadras
-        SistemaEstacionamento sistema = new SistemaEstacionamento("Estacionamento FACAMP");
+        SistemaEstacionamento sistema = new SistemaEstacionamento("Estacionamento UNASP");
         sistema.adicionarQuadra(new Quadra("Quadra A", 3));
         sistema.adicionarQuadra(new Quadra("Quadra B", 2));
         sistema.adicionarQuadra(new Quadra("Quadra C", 2));
